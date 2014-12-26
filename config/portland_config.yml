@@ -1,0 +1,16 @@
+defaults: &DEFAULTS
+  docker_client_type: :socket
+  docker_client_socket: <%= ENV['DOCKER_SOCKET'] || '/var/run/docker.sock' %>
+  fs_root: <%= ENV['FS_ROOT'] || Rails.root %>
+
+development:
+  <<: *DEFAULTS
+
+test:
+  <<: *DEFAULTS
+
+staging:
+  <<: *DEFAULTS
+
+production:
+  <<: *DEFAULTS

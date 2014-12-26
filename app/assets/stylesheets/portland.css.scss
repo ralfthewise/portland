@@ -1,0 +1,29 @@
+// Place all the styles related to the Portland controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+//= require bootstrap_init
+//= require_self
+
+// make space for navbar
+body { padding-top: 70px; }
+
+.pointer {
+  cursor: pointer;
+}
+
+.navbar-brand {
+  font-family: Ubuntu, Lato, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 28px;
+}
+
+.alert {
+  &.animated-alert {
+    $alert-transition-period: 0.5s;
+    transition: opacity $alert-transition-period, height $alert-transition-period, padding $alert-transition-period, margin $alert-transition-period, border $alert-transition-period;
+  }
+
+  &.closed {
+    display: none;
+  }
+}

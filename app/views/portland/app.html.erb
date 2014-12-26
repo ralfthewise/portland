@@ -1,0 +1,14 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag 'portland', media: 'all', 'data-turbolinks-track' => true %>
+  <!-- <link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'> -->
+<% end %>
+
+<div id="app-region"></div>
+
+<%= javascript_include_tag 'portland', 'data-turbolinks-track' => true %>
+<%= javascript_tag do %>
+  $(function() {
+    MarionetteApp.initialize({}); // start up the app
+  });
+<% end %>
+
