@@ -8,6 +8,7 @@
 #= require backbone.marionette
 #= require Backbone.ModelBinder
 #= require handlebars.runtime
+#= require_tree ./lib
 #= require_self
 
 window.MarionetteApp =

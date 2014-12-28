@@ -9,3 +9,7 @@
 #= require_tree ./portland/views
 
 window.Portland = MarionetteApp
+
+Portland.app.addInitializer(() ->
+  Portland.dockerInfo.fetch()
+)

@@ -5,7 +5,7 @@ class Portland.Views.Terminal extends Portland.Views.BaseLayout
     terminalContainer: '.terminal-container'
 
   onShow: () ->
-    @_initTerminal()
+    #@_initTerminal()
 
   _initTerminal: () ->
     socket = io('/', {path: '/terminal/socket.io'})
