@@ -1,7 +1,7 @@
 class Portland.Routers.Main extends Backbone.Marionette.AppRouter
   routes:
-    '': 'containersIndex'
-    'containers': 'containersIndex'
+    '': 'dashboard'
+    'containers': 'containers'
 
   getRoot: -> '/portland'
 
@@ -13,5 +13,8 @@ class Portland.Routers.Main extends Backbone.Marionette.AppRouter
   navigateTo: (path, options = {}) ->
     @navigate(path, _.defaults({}, options, {trigger: true}))
 
-  containersIndex: () ->
-    console.log('containers index')
+  dashboard: () ->
+    @mainLayout.mainContentRegion.show(new Portland.Views.Dashboard())
+
+  containers: () ->
+    @mainLayout.mainContentRegion.show(new Portland.Views.Containers())

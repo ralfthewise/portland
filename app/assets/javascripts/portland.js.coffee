@@ -12,4 +12,5 @@ window.Portland = MarionetteApp
 
 Portland.app.addInitializer(() ->
   Portland.dockerInfo.fetch()
+  Portland.dockerContainers.fetch()
 )
