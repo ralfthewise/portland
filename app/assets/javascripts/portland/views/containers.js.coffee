@@ -2,6 +2,10 @@ class Container extends Portland.Views.BaseLayout
   template: 'container'
   tagName: 'tr'
 
+  behaviors:
+    Bindable: {}
+    Tooltips: {}
+
   bindings:
     Id: {selector: '.container-link', attr: 'href', toView: (v) -> "/portland/containers/#{v}"}
     Names: {selector: '.container-link', toView: (v) -> v?[0]}
