@@ -1,5 +1,5 @@
-class Container extends Portland.Views.BaseLayout
-  template: 'container'
+class IndexItem extends Portland.Views.BaseLayout
+  template: 'containers/index_item'
   tagName: 'tr'
 
   behaviors:
@@ -14,9 +14,9 @@ class Container extends Portland.Views.BaseLayout
       {selector: '.stopped-item', attr: 'displayed', toView: -> @model.isRunning()}
     ]
 
-class Portland.Views.Containers extends Portland.Views.BaseComposite
-  template: 'containers'
-  childView: Container
+class Portland.Views.ContainersIndex extends Portland.Views.BaseComposite
+  template: 'containers/index'
+  childView: IndexItem
   childViewContainer: 'tbody.containers-container'
 
   initialize: () ->

@@ -17,4 +17,4 @@ class Portland.Routers.Main extends Backbone.Marionette.AppRouter
     @mainLayout.mainContentRegion.show(new Portland.Views.Dashboard())
 
   containers: () ->
-    @mainLayout.mainContentRegion.show(new Portland.Views.Containers())
+    @mainLayout.mainContentRegion.show(new Portland.Views.ContainersIndex())
