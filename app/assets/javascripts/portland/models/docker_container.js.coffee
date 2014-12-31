@@ -1,4 +1,6 @@
 class Portland.Models.DockerContainer extends Portland.Models.Base
+  mixin(@, MarionetteApp.Traits.CachableModel)
+
   idAttribute: 'Id'
   url: -> "/docker/containers/#{@get('Id')}/json"
 
