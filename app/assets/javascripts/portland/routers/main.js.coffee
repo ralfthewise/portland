@@ -2,6 +2,7 @@ class Portland.Routers.Main extends Backbone.Marionette.AppRouter
   routes:
     '': 'dashboard'
     'containers': 'containers'
+    'containers/:id': 'containersMain'
 
   getRoot: -> '/portland'
 
@@ -18,3 +19,7 @@ class Portland.Routers.Main extends Backbone.Marionette.AppRouter
 
   containers: () ->
     @mainLayout.mainContentRegion.show(new Portland.Views.ContainersIndex())
+
+  containersMain: (id) ->
+    model = Portland.Models.DockerContainer.find(id, {fetch: true})
+    @mainLayout.mainContentRegion.show(new Portland.Views.ContainersMain({model}))

@@ -26,7 +26,10 @@ Portland.Traits.CachableModel =
     id = attributes[@::.idAttribute]
     if id?
       model = @cachedModels[id]
-      model = (@cachedModels[id] = new @(attributes, options)) if not model?
+      if model?
+        model.set(attributes)
+      else
+        model = (@cachedModels[id] = new @(attributes, options))
     else
       model = new @(attributes, options)
       model.once("change:#{model.idAttribute}", => @cachedModels[model.id] = model)
