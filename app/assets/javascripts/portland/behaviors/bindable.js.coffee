@@ -3,6 +3,7 @@ class Portland.Behaviors.Bindable extends Backbone.Marionette.Behavior
     skipDefault: false
 
   onRender: () ->
+    @view.initBindings?()
     if @view.model? or @view.bindings?
       @binders ?= {}
 

@@ -1,4 +1,6 @@
 class Portland.Views.BaseLayout extends Backbone.Marionette.LayoutView
+  Backbone.Bb.View.mixin(@::)
+
   behaviors:
     Bindable: {}
 
