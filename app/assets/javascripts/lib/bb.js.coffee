@@ -38,42 +38,53 @@ initBindings = (view) ->
         updateView($el, bindingDestination, bindingFilter, result)
       toView()
 
-      context = view
-      _.find(bindingSourceProps, (bindingSourceProp) ->
-        switch
-          when context instanceof Backbone.View
-            return true unless context[bindingSourceProp]?
-            if _.isFunction(context[bindingSourceProp])
-              context.model?.startRecording?()
-              result = context[bindingSourceProp].call(context)
-              if context.model?.finishRecording?
-                modelAttributes = context.model.finishRecording()
-                _.each(modelAttributes, (ignored, attribute) -> view.listenTo(context.model, "change:#{attribute}", toView))
-              context = result
-            else
-              context = context[bindingSourceProp]
-            return false
-          when context instanceof Backbone.Model
-            if context[bindingSourceProp]?
+      attachBindings = ->
+        bindingChain = []
+        context = view
+        chainIncomplete = _.find(bindingSourceProps, (bindingSourceProp) ->
+          switch
+            when context instanceof Backbone.View
+              return true unless context[bindingSourceProp]?
               if _.isFunction(context[bindingSourceProp])
-                context.startRecording?()
+                context.model?.startRecording?()
                 result = context[bindingSourceProp].call(context)
-                if context.finishRecording?
-                  modelAttributes = context.finishRecording()
-                  _.each(modelAttributes, (ignored, attribute) -> view.listenTo(context, "change:#{attribute}", toView))
+                if context.model?.finishRecording?
+                  modelAttributes = context.model.finishRecording()
+                  #_.each(modelAttributes, (ignored, attribute) -> view.listenTo(context.model, "change:#{attribute}", toView))
+                  _.each(modelAttributes, (ignored, attribute) -> bindingChain.push({model: context.model, attribute}))
                 context = result
               else
                 context = context[bindingSourceProp]
+              return false
+            when context instanceof Backbone.Model
+              if context[bindingSourceProp]?
+                if _.isFunction(context[bindingSourceProp])
+                  context.startRecording?()
+                  result = context[bindingSourceProp].call(context)
+                  if context.finishRecording?
+                    modelAttributes = context.finishRecording()
+                    #_.each(modelAttributes, (ignored, attribute) -> view.listenTo(context, "change:#{attribute}", toView))
+                    _.each(modelAttributes, (ignored, attribute) -> bindingChain.push({model: context, attribute}))
+                  context = result
+                else
+                  context = context[bindingSourceProp]
+              else
+                #view.listenTo(context, "change:#{bindingSourceProp}", toView)
+                bindingChain.push({model: context, attribute: bindingSourceProp})
+                context = context.get(bindingSourceProp)
+              return false
+            when not context?
+              debugger
+              return true
             else
-              view.listenTo(context, "change:#{bindingSourceProp}", toView)
-              context = context.get(bindingSourceProp)
-            return false
-          when not context?
-            return true
-          else
-            context = context[bindingSourceProp]
-            return false
-      )
+              context = context[bindingSourceProp]
+              return false
+        )
+        if not chainIncomplete?
+          bindingLeaf = bindingChain.pop()
+          view.listenTo(bindingLeaf.model, "change:#{bindingLeaf.attribute}", toView) if bindingLeaf?
+        _.each(bindingChain, (bindingNode) -> view.listenTo(bindingNode.model, "change:#{bindingNode.attribute}", attachBindings))
+      attachBindings()
 
 viewMixin =
   initBindings: -> initBindings(@)
