@@ -33,11 +33,10 @@ constructCallbackToPropagateBbChangesToView = (view, $el, elAttribute, bindingPr
     #now actually update the view with the value
     updateView($el, elAttribute, filter, result)
 
-constructCallbackToAttachBindingsToView = (view, toView, bindingProperties) ->
-  existingBindings = []
-
+constructCallbackToAttachBindingsToView = (view, toView, attachedBindings, bindingProperties) ->
   attachBindings = ->
-    view.stopListening(b.model, "change:#{b.property}", b.callback) while b = existingBindings.pop()
+    toView()
+    view.stopListening(b.model, "change:#{b.property}", b.callback) while b = attachedBindings.pop()
     bindingChain = []
     context = view
     chainIncomplete = _.find(bindingProperties, (property) ->
@@ -64,32 +63,36 @@ constructCallbackToAttachBindingsToView = (view, toView, bindingProperties) ->
     if not chainIncomplete?
       bindingLeaf = bindingChain.pop()
       view.listenTo(bindingLeaf.model, "change:#{bindingLeaf.property}", toView) if bindingLeaf?
-      existingBindings.push({model: bindingLeaf.model, property: bindingLeaf.property, callback: toView})
+      attachedBindings.push({model: bindingLeaf.model, property: bindingLeaf.property, callback: toView})
 
     #any node above the leaf node we setup our Backbone event listener to re-attach bindings
     #eg: if we're binding to 'model.manager.name', and 'manager' changes, we need to re-attach to the new manager model
     _.each(bindingChain, (bindingNode) ->
       view.listenTo(bindingNode.model, "change:#{bindingNode.property}", attachBindings)
-      existingBindings.push({model: bindingNode.model, property: bindingNode.property, callback: attachBindings})
+      attachedBindings.push({model: bindingNode.model, property: bindingNode.property, callback: attachBindings})
     )
 
   return attachBindings
 
 updateView = ($el, elAttribute, filter, value) ->
-  $el.text(value)
+  $el.text(if value? then value.toString() else '')
 
 processPropertyOfBackboneContext = (bindingChain, context, model, property) ->
   if _.isFunction(context[property])
     model?.startRecording?()
     result = context[property].call(context)
     if model?.finishRecording?
-      modelAttributes = model.finishRecording()
-      _.each(modelAttributes, (ignored, attribute) -> bindingChain.push({model, attribute}))
+      modelProperties = model.finishRecording()
+      _.each(modelProperties, (ignored, modelProperty) -> bindingChain.push({model, property: modelProperty}))
     return result
   else
     return context[property]
 
 initBindings = (view) ->
+  #remove existing bindings
+  while bindingChain = view._attachedBindings.pop()
+    view.stopListening(b.model, "change:#{b.property}", b.callback) while b = bindingChain.pop()
+
   view.$el.find('[data-bb]').each ->
     $el = $(@)
     for binding in $el.data('bb')?.split(',')
@@ -101,12 +104,13 @@ initBindings = (view) ->
       filter = bindingArray[3]
 
       toView = constructCallbackToPropagateBbChangesToView(view, $el, elAttribute, bindingSourceProps, filter)
-      toView()
 
-      attachBindings = constructCallbackToAttachBindingsToView(view, toView, bindingSourceProps)
+      view._attachedBindings.push(bindingChain = [])
+      attachBindings = constructCallbackToAttachBindingsToView(view, toView, bindingChain, bindingSourceProps)
       attachBindings()
 
 viewMixin =
+  _attachedBindings: []
   initBindings: -> initBindings(@)
 
 modelMixin =
