@@ -7,8 +7,87 @@ mixin = (target, trait) ->
 
 bindingRegex = /^([\w-]+):([\w.-]+)(?:\|([\w-]+))?$/
 
+#constructs a closure to propogate Backbone changes to the view
+constructCallbackToPropagateBbChangesToView = (view, $el, elAttribute, bindingProperties, filter) ->
+  return ->
+    result = view
+    _.find(bindingProperties, (property) ->
+      switch
+
+        #handle the case where it's a method or property
+        when result[property]?
+          result = _.result(result, property)
+          return not result?
+
+        #handle the case where it's a model.get()
+        when result instanceof Backbone.Model
+          result = result.get(property)
+          return not result?
+
+        #otherwise we don't know what to do, consider it to be null and break out of the loop
+        else
+          result = null
+          return true
+    )
+
+    #now actually update the view with the value
+    updateView($el, elAttribute, filter, result)
+
+constructCallbackToAttachBindingsToView = (view, toView, bindingProperties) ->
+  existingBindings = []
+
+  attachBindings = ->
+    view.stopListening(b.model, "change:#{b.property}", b.callback) while b = existingBindings.pop()
+    bindingChain = []
+    context = view
+    chainIncomplete = _.find(bindingProperties, (property) ->
+      switch
+        when context instanceof Backbone.View
+          return true unless context[property]?
+          context = processPropertyOfBackboneContext(bindingChain, context, context.model, property)
+          return false
+        when context instanceof Backbone.Model
+          if context[property]?
+            context = processPropertyOfBackboneContext(bindingChain, context, context, property)
+          else
+            bindingChain.push({model: context, property})
+            context = context.get(property)
+          return false
+        when not context?
+          return true
+        else
+          context = context[property]
+          return false
+    )
+
+    #if we made it down the entire chain, let's setup our Backbone event listener to update the view
+    if not chainIncomplete?
+      bindingLeaf = bindingChain.pop()
+      view.listenTo(bindingLeaf.model, "change:#{bindingLeaf.property}", toView) if bindingLeaf?
+      existingBindings.push({model: bindingLeaf.model, property: bindingLeaf.property, callback: toView})
+
+    #any node above the leaf node we setup our Backbone event listener to re-attach bindings
+    #eg: if we're binding to 'model.manager.name', and 'manager' changes, we need to re-attach to the new manager model
+    _.each(bindingChain, (bindingNode) ->
+      view.listenTo(bindingNode.model, "change:#{bindingNode.property}", attachBindings)
+      existingBindings.push({model: bindingNode.model, property: bindingNode.property, callback: attachBindings})
+    )
+
+  return attachBindings
+
 updateView = ($el, elAttribute, filter, value) ->
   $el.text(value)
+
+processPropertyOfBackboneContext = (bindingChain, context, model, property) ->
+  if _.isFunction(context[property])
+    model?.startRecording?()
+    result = context[property].call(context)
+    if model?.finishRecording?
+      modelAttributes = model.finishRecording()
+      _.each(modelAttributes, (ignored, attribute) -> bindingChain.push({model, attribute}))
+    return result
+  else
+    return context[property]
 
 initBindings = (view) ->
   view.$el.find('[data-bb]').each ->
@@ -16,74 +95,15 @@ initBindings = (view) ->
     for binding in $el.data('bb')?.split(',')
       bindingArray = binding.match(bindingRegex)
       throw new Error("Unable to parse binding: #{binding}") unless bindingArray?
-      bindingDestination = bindingArray[1]
+      elAttribute = bindingArray[1]
       bindingSource = bindingArray[2]
-      bindingFilter = bindingArray[3]
-
       bindingSourceProps = bindingSource.split('.')
-      toView = ->
-        result = view
-        _.find(bindingSourceProps, (bindingSourceProp) ->
-          switch
-            when result[bindingSourceProp]?
-              result = _.result(result, bindingSourceProp)
-              return not result?
-            when result instanceof Backbone.Model
-              result = result.get(bindingSourceProp)
-              return not result?
-            else
-              result = null
-              return true
-        )
-        updateView($el, bindingDestination, bindingFilter, result)
+      filter = bindingArray[3]
+
+      toView = constructCallbackToPropagateBbChangesToView(view, $el, elAttribute, bindingSourceProps, filter)
       toView()
 
-      attachBindings = ->
-        bindingChain = []
-        context = view
-        chainIncomplete = _.find(bindingSourceProps, (bindingSourceProp) ->
-          switch
-            when context instanceof Backbone.View
-              return true unless context[bindingSourceProp]?
-              if _.isFunction(context[bindingSourceProp])
-                context.model?.startRecording?()
-                result = context[bindingSourceProp].call(context)
-                if context.model?.finishRecording?
-                  modelAttributes = context.model.finishRecording()
-                  #_.each(modelAttributes, (ignored, attribute) -> view.listenTo(context.model, "change:#{attribute}", toView))
-                  _.each(modelAttributes, (ignored, attribute) -> bindingChain.push({model: context.model, attribute}))
-                context = result
-              else
-                context = context[bindingSourceProp]
-              return false
-            when context instanceof Backbone.Model
-              if context[bindingSourceProp]?
-                if _.isFunction(context[bindingSourceProp])
-                  context.startRecording?()
-                  result = context[bindingSourceProp].call(context)
-                  if context.finishRecording?
-                    modelAttributes = context.finishRecording()
-                    #_.each(modelAttributes, (ignored, attribute) -> view.listenTo(context, "change:#{attribute}", toView))
-                    _.each(modelAttributes, (ignored, attribute) -> bindingChain.push({model: context, attribute}))
-                  context = result
-                else
-                  context = context[bindingSourceProp]
-              else
-                #view.listenTo(context, "change:#{bindingSourceProp}", toView)
-                bindingChain.push({model: context, attribute: bindingSourceProp})
-                context = context.get(bindingSourceProp)
-              return false
-            when not context?
-              debugger
-              return true
-            else
-              context = context[bindingSourceProp]
-              return false
-        )
-        if not chainIncomplete?
-          bindingLeaf = bindingChain.pop()
-          view.listenTo(bindingLeaf.model, "change:#{bindingLeaf.attribute}", toView) if bindingLeaf?
-        _.each(bindingChain, (bindingNode) -> view.listenTo(bindingNode.model, "change:#{bindingNode.attribute}", attachBindings))
+      attachBindings = constructCallbackToAttachBindingsToView(view, toView, bindingSourceProps)
       attachBindings()
 
 viewMixin =
