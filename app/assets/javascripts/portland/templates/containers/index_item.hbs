@@ -1,11 +1,11 @@
-<td><a class="container-link"></a></td>
+<td><a class="container-link" data-bb="text:model.getName"></a></td>
 <td name="Image"></td>
-<td class="hidden-xs" name="Command"></td>
-<td name="Status"></td>
+<td class="hidden-xs" data-bb="text:model.getCommand"></td>
+<td data-bb="text:model.getStatus"></td>
 <td>
   <span class="play-btn stopped-item glyphicon glyphicon-play pointer" aria-hidden="true" data-toggle="tooltip" tabindex="0" title="Start"></span>
   <span class="stop-btn running-item glyphicon glyphicon-stop pointer" aria-hidden="true" data-toggle="tooltip" tabindex="0" title="Stop"></span>
   <span class="restart-btn running-item glyphicon glyphicon-repeat pointer" aria-hidden="true" data-toggle="tooltip" tabindex="0" title="Restart"></span>
-  <span class="glyphicon glyphicon-refresh pointer" aria-hidden="true" data-toggle="tooltip" tabindex="0" title="Rebuild"></span>
+  <span class="glyphicon glyphicon-refresh pointer" aria-hidden="true" data-toggle="tooltip" tabindex="0" title="Rebuild (and restart if running)"></span>
   <span class="glyphicon glyphicon-trash pointer" aria-hidden="true" data-toggle="tooltip" tabindex="0" title="Remove"></span>
 </td>

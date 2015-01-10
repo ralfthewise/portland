@@ -1,5 +1,6 @@
 #= require marionette_app
 #= require_self
+#= require_tree ./portland/lib
 #= require_tree ./portland/routers
 #= require_tree ./portland/traits
 #= require_tree ./portland/behaviors
@@ -14,4 +15,5 @@ window.Portland = MarionetteApp
 Portland.app.addInitializer(() ->
   Portland.dockerInfo.fetch()
   Portland.dockerContainers.fetch()
+  new Portland.Lib.DockerEventConsumer()
 )

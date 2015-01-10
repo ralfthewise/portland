@@ -1,3 +1,4 @@
+#= require websocket_rails/main
 #= require jquery
 #= require bootstrap-sass-official
 #= require turbolinks
@@ -13,6 +14,7 @@
 
 window.MarionetteApp =
   app: new Backbone.Marionette.Application()
+  Lib: {}
   Traits: {}
   Behaviors: {}
   Regions: {}

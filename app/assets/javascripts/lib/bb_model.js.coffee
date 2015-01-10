@@ -1,0 +1,20 @@
+modelMixin =
+  startRecording: ->
+    accesses = {}
+    originalGet = @get
+    @get = (attribute) ->
+      accesses[attribute] = true
+      originalGet.call(@, attribute)
+
+    @finishRecording = ->
+      delete @get
+      delete @finishRecording
+      return accesses
+
+    return
+
+class Backbone.Bb.Model extends Backbone.Model
+  @mixin: (target) ->
+    Backbone.Bb.mixin(target, modelMixin) if target?
+    return modelMixin
+  @mixin(@::)

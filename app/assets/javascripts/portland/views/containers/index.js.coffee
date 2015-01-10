@@ -8,7 +8,6 @@ class IndexItem extends Portland.Views.BaseLayout
 
   bindings:
     Id: {selector: '.container-link', attr: 'href', toView: (v) -> "/portland/containers/#{v}"}
-    Names: {selector: '.container-link', toView: (v) -> v?[0]}
     Status: [
       {selector: '.running-item', attr: 'displayed', toView: -> not @model.isRunning()}
       {selector: '.stopped-item', attr: 'displayed', toView: -> @model.isRunning()}

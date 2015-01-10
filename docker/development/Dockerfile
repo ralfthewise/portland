@@ -23,15 +23,19 @@ RUN curl -sL https://deb.nodesource.com/setup | sudo bash -
 RUN apt-get -y install nodejs
 RUN apt-get -y install python
 
+RUN apt-get -y install redis-server
+RUN mkdir /var/run/redis
+
 RUN mkdir -p /home/app && chmod 777 /home/app
 ENV HOME /home/app
 
 COPY run.sh /home/app/run.sh
 COPY nginx.conf /home/app/nginx.conf
 
-EXPOSE 8000 3000 3001
+EXPOSE 80
 
 #ENTRYPOINT ["/bin/bash", "-l", "-c", "${0} ${1+\"$@\"}"]
 ENTRYPOINT ["/bin/bash", "-l", "/home/app/run.sh"]
+#ENTRYPOINT ["/bin/bash", "-l"]
 #CMD ["/bin/bash", "-il"]
 #CMD ["/home/app/run.sh"]
