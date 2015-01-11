@@ -19,4 +19,4 @@ class Portland.Lib.DockerMonitor
   _refresh: =>
     Portland.dockerImages.fetch()
     Portland.dockerContainers.fetch()
-    window.setTimeout(@_refresh, 1000 * 60)
+    window.setTimeout(@_refresh, 1000 * 60 * 5)
