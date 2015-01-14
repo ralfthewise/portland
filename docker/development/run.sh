@@ -17,7 +17,6 @@ LOG_FILES=(
   /app/log/websocket_rails_server.log
 )
 
-#if [ $(tty) == "/dev/console" ]; then
 if [ -t 1 ]; then
   #we're attached to a terminal, do our fancy dashboard
   tmux new-session -d "bash -l -c \"bundle exec eye watch\""
@@ -28,4 +27,5 @@ else
   tail -f ${LOG_FILES[*]}
 fi
 
+echo "Shutting down..."
 bundle exec eye quit -s

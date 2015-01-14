@@ -24,7 +24,7 @@ Eye.application 'portland' do
     pid_file '/tmp/rails.pid'
     stdall('/tmp/rails.log')
     daemonize true
-    start_command 'bundle exec rails s'
+    start_command 'bundle exec rails s Puma'
     stop_signals [:INT, 15.seconds, :KILL]
   end
 

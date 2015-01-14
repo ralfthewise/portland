@@ -4,14 +4,27 @@ class Portland.Models.DockerContainer extends Portland.Models.Base
   idAttribute: 'Id'
   url: -> "/docker/containers/#{@get('Id')}/json"
 
+  fetchAndProcess: ->
+    @fetch.apply(@, arguments).fail((xhr, textStatus, errorThrown) =>
+      Portland.dockerContainers.remove(@) if xhr.status is 404
+    )
+
   isRunning: -> @get('Status')?.indexOf('Exited') is 0
-  getName: -> if @has('Names') then @get('Names')[0] else @get('Name')
-  getCommand: -> if @has('Config') then @get('Config').Cmd?.join(' ') else @get('Command')
+
+  getName: ->
+    [name, names] = [@get('Name'), @get('Names')]
+    return if name? then name else _.last(names)
+
+  getCommand: ->
+    [command, config] = [@get('Command'), @get('Config')]
+    return if command? then command else config?.Cmd?.join(' ')
+
   getStatus: ->
     #TODO: calculate this better based on State.StartedAt
-    return @get('Status') if @has('Status')
-    return 'Up a few seconds' if @get('State')?.Running
-    return 'Stopped'
+    [status, state] = [@get('Status'), @get('State')]
+    return status if status?
+    return 'Up a few seconds' if state?.Running
+    return 'Exited'
 
 class Portland.Collections.DockerContainer extends Portland.Collections.Base
   model: Portland.Models.DockerContainer

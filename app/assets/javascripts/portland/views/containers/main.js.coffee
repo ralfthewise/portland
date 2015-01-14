@@ -7,3 +7,9 @@ class Portland.Views.ContainersMain extends Portland.Views.BaseLayout
 
   bindings:
     Names: {selector: '.container-name', toView: (v) -> v?[0]}
+
+  regions:
+    terminalRegion: '.terminal-region'
+
+  onShow: () ->
+    @terminalRegion.show(new Portland.Views.Terminal({@model}))

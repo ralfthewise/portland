@@ -42,6 +42,7 @@ gem 'spring',        group: :development
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
+gem 'puma'
 gem 'sass', require: 'sass'
 gem 'httparty'
 gem 'modernizr-rails'
@@ -51,3 +52,4 @@ gem 'handlebars_assets'
 gem 'autoprefixer-rails'
 gem 'eye'
 gem 'websocket-rails'
+gem 'tubesock'
