@@ -1,5 +1,12 @@
 #!/bin/bash
 
+cleanup() {
+  printf "\nShutting down..."
+  bundle exec eye quit -s
+  pkill -P $$
+}
+trap 'cleanup' SIGTERM SIGINT
+
 bundle install --path vendor/bundle --binstubs vendor/bundle/bin --without production
 bundle exec eye load eye/development.eye
 
@@ -22,10 +29,9 @@ if [ -t 1 ]; then
   tmux new-session -d "bash -l -c \"bundle exec eye watch\""
   tmux split-window -h -p 65 "bash -c \"trap 'tmux kill-session' SIGINT SIGTERM; tail -f ${LOG_FILES[*]}\""
   tmux -2 attach-session
+  cleanup
 else
   #we're not attached to a terminal, just do simple logging
-  tail -f ${LOG_FILES[*]}
+  tail -f ${LOG_FILES[*]} &
+  wait
 fi
-
-echo "Shutting down..."
-bundle exec eye quit -s
