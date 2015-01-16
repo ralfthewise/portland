@@ -33,20 +33,5 @@ class Portland.Views.Terminal extends Portland.Views.BaseLayout
   _onWebsocketClose: =>
     @term.destroy()
 
-  _initTerminalSockerIO: () ->
-    socket = io('/', {path: '/terminal/socket.io'})
-    socket.on('connect', =>
-      term = new window.Terminal(
-        cols: 80
-        rows: 24
-        useStyle: true
-        screenKeys: true
-      )
+  _resizeTerminal: =>
 
-      term.on('data', (data) -> socket.emit('data', data))
-      term.open(@ui.terminalContainer[0])
-      term.write('Welcome to term\r\n')
-
-      socket.on('data', (data) -> term.write(data))
-      socket.on('disconnect', -> term.destroy())
-    )

@@ -27,7 +27,7 @@ class Portland.Lib.DockerMonitor
       delete @queue.update[id]
     )
 
-  _processQueue: _.debounce(@::_processQueueThrottled, 500)
+  _processQueue: _.debounce(@::_processQueueThrottled, 2000)
 
   _refresh: =>
     Portland.dockerImages.fetch()
