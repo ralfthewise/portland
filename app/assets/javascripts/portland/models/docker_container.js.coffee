@@ -3,13 +3,14 @@ class Portland.Models.DockerContainer extends Portland.Models.Base
 
   idAttribute: 'Id'
   url: -> "/docker/containers/#{@get('Id')}/json"
+  path: -> "/portland/containers/#{@id}"
 
   fetchAndProcess: ->
     @fetch.apply(@, arguments).fail((xhr, textStatus, errorThrown) =>
       Portland.dockerContainers.remove(@) if xhr.status is 404
     )
 
-  isRunning: -> @get('Status')?.indexOf('Exited') is 0
+  isRunning: -> @getStatus()?.indexOf('Exited') isnt 0
 
   getName: ->
     [name, names] = [@get('Name'), @get('Names')]

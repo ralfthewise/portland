@@ -7,11 +7,12 @@ class IndexItem extends Portland.Views.BaseLayout
     Tooltips: {}
 
   bindings:
-    Id: {selector: '.container-link', attr: 'href', toView: (v) -> "/portland/containers/#{v}"}
     Status: [
       {selector: '.running-item', attr: 'displayed', toView: -> not @model.isRunning()}
       {selector: '.stopped-item', attr: 'displayed', toView: -> @model.isRunning()}
     ]
+
+  statusClass: -> if @model.isRunning() then 'label-success' else 'label-danger'
 
 class Portland.Views.ContainersIndex extends Portland.Views.BaseComposite
   template: 'containers/index'
