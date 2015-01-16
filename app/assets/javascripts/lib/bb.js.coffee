@@ -1,4 +1,5 @@
 #= require_self
+#= require ./bb_filters
 #= require ./bb_model
 #= require ./bb_view
 

@@ -3,13 +3,14 @@ class Portland.Models.DockerContainer extends Portland.Models.Base
 
   idAttribute: 'Id'
   url: -> "/docker/containers/#{@get('Id')}/json"
+  path: -> "/portland/containers/#{@id}"
 
   fetchAndProcess: ->
     @fetch.apply(@, arguments).fail((xhr, textStatus, errorThrown) =>
       Portland.dockerContainers.remove(@) if xhr.status is 404
     )
 
-  isRunning: -> @get('Status')?.indexOf('Exited') is 0
+  isRunning: -> @getStatus()?.indexOf('Exited') isnt 0
 
   getName: ->
     [name, names] = [@get('Name'), @get('Names')]
@@ -29,5 +30,11 @@ class Portland.Models.DockerContainer extends Portland.Models.Base
 class Portland.Collections.DockerContainer extends Portland.Collections.Base
   model: Portland.Models.DockerContainer
   url:"/docker/containers/json?all=1"
+
+  comparator: (a, b) ->
+    [aRunning, bRunning] = [a.isRunning(), b.isRunning()]
+    return -1 if aRunning and not bRunning
+    return 1 if not aRunning and bRunning
+    return a.getName().localeCompare(b.getName())
 
 Portland.dockerContainers = new Portland.Collections.DockerContainer()

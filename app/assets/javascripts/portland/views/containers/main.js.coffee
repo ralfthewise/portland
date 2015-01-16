@@ -12,4 +12,4 @@ class Portland.Views.ContainersMain extends Portland.Views.BaseLayout
     terminalRegion: '.terminal-region'
 
   onShow: () ->
-    @terminalRegion.show(new Portland.Views.Terminal({@model}))
+    #@terminalRegion.show(new Portland.Views.Terminal({@model}))
