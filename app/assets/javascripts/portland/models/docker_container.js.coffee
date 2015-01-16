@@ -31,4 +31,10 @@ class Portland.Collections.DockerContainer extends Portland.Collections.Base
   model: Portland.Models.DockerContainer
   url:"/docker/containers/json?all=1"
 
+  comparator: (a, b) ->
+    [aRunning, bRunning] = [a.isRunning(), b.isRunning()]
+    return -1 if aRunning and not bRunning
+    return 1 if not aRunning and bRunning
+    return a.getName().localeCompare(b.getName())
+
 Portland.dockerContainers = new Portland.Collections.DockerContainer()
