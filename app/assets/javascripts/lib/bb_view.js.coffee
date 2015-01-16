@@ -1,7 +1,7 @@
-bindingRegex = /^([\w-]+):([\w.-]+)(?:\|([\w-]+))?$/
+bindingRegex = /^([\w-]+):(!?[\w.-]+)(?:\|([\w-]+))?$/
 
 #constructs a closure to propogate Backbone changes to the view
-constructCallbackToPropagateBbChangesToView = (view, $el, elAttribute, bindingProperties, filter) ->
+constructCallbackToPropagateBbChangesToView = (view, $el, elAttribute, bindingProperties, filters) ->
   previousResult = null
   return ->
     result = view
@@ -24,8 +24,10 @@ constructCallbackToPropagateBbChangesToView = (view, $el, elAttribute, bindingPr
           return true
     )
 
+    _.each(filters, (filter) -> result = Backbone.Bb.Filters[filter].call(view, result))
+
     #now actually update the view with the value
-    updateView($el, elAttribute, filter, result, previousResult)
+    updateView($el, elAttribute, result, previousResult)
     previousResult = result
 
 constructCallbackToAttachBindingsToView = (view, toView, attachedBindings, bindingProperties) ->
@@ -90,9 +92,11 @@ constructCallbackToAttachBindingsToView = (view, toView, attachedBindings, bindi
 
   return attachBindings
 
-updateView = ($el, elAttribute, filter, value, previousValue) ->
+updateView = ($el, elAttribute, value, previousValue) ->
   switch elAttribute
     when 'text' then $el.text(if value? then value.toString() else '')
+    when 'displayed'
+      if !!value then $el.show() else $el.hide()
     when 'class'
       $el.removeClass(previousValue) if previousValue?
       $el.addClass(value) if value?
@@ -121,12 +125,16 @@ initBindings = (view) ->
     for binding in $el.data('bb')?.split(',')
       bindingArray = binding.match(bindingRegex)
       throw new Error("Unable to parse binding: #{binding}") unless bindingArray?
+      filters = []
       elAttribute = bindingArray[1]
       bindingSource = bindingArray[2]
+      if bindingSource[0] is '!'
+        bindingSource = bindingSource.slice(1)
+        filters.push('not')
       bindingSourceProps = bindingSource.split('.')
-      filter = bindingArray[3]
+      filters.push(bindingArray[3]) if bindingArray[3]?
 
-      toView = constructCallbackToPropagateBbChangesToView(view, $el, elAttribute, bindingSourceProps, filter)
+      toView = constructCallbackToPropagateBbChangesToView(view, $el, elAttribute, bindingSourceProps, filters)
 
       view._attachedBindings.push(bindingChain = [])
       attachBindings = constructCallbackToAttachBindingsToView(view, toView, bindingChain, bindingSourceProps)

@@ -6,12 +6,6 @@ class IndexItem extends Portland.Views.BaseLayout
     Bindable: {}
     Tooltips: {}
 
-  bindings:
-    Status: [
-      {selector: '.running-item', attr: 'displayed', toView: -> not @model.isRunning()}
-      {selector: '.stopped-item', attr: 'displayed', toView: -> @model.isRunning()}
-    ]
-
   statusClass: -> if @model.isRunning() then 'label-success' else 'label-danger'
 
 class Portland.Views.ContainersIndex extends Portland.Views.BaseComposite
