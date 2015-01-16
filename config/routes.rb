@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   root 'portland#app'
   get '/portland(/*approute)' => 'portland#app'
+  get '/streaming/logs/:container_id' => 'streaming#logs'
   get '/streaming/attach/:container_id' => 'streaming#attach'
 
   scope '/api', :constraints => { :format => 'json' }, :defaults => { :format => 'json' } do
