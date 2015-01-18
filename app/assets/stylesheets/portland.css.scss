@@ -29,3 +29,8 @@ body { padding-top: 70px; }
     display: none;
   }
 }
+
+.modal .filesystem-region {
+  max-height: 300px;
+  overflow: auto;
+}
