@@ -7,6 +7,7 @@
 #= require ./portland/models/base
 #= require_tree ./portland/models
 #= require_tree ./portland/templates
+#= require_tree ./portland/regions
 #= require ./portland/views/base
 #= require_tree ./portland/views
 
