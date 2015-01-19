@@ -1,6 +1,8 @@
 class Portland.Routers.Main extends Backbone.Marionette.AppRouter
   routes:
     '': 'dashboard'
+    'images': 'images'
+    'images/:id': 'imagesMain'
     'containers': 'containers'
     'containers/:id': 'containersMain'
 
@@ -16,6 +18,13 @@ class Portland.Routers.Main extends Backbone.Marionette.AppRouter
 
   dashboard: () ->
     @mainLayout.mainContentRegion.show(new Portland.Views.Dashboard())
+
+  images: () ->
+    @mainLayout.mainContentRegion.show(new Portland.Views.ImagesIndex())
+
+  imagesMain: (id) ->
+    model = Portland.Models.DockerImage.find(id, {fetch: true})
+    @mainLayout.mainContentRegion.show(new Portland.Views.ImagesMain({model}))
 
   containers: () ->
     @mainLayout.mainContentRegion.show(new Portland.Views.ContainersIndex())

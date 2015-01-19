@@ -1,5 +1,6 @@
 #= require websocket_rails/main
 #= require jquery
+#= require moment
 #= require bootstrap-sass-official
 #= require turbolinks
 #= require underscore

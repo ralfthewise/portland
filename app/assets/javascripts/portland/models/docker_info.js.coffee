@@ -12,4 +12,8 @@ class Portland.Models.DockerInfo extends Portland.Models.Base
     @get('version').fetch()
     super
 
+  getRam: ->
+    ram = Math.floor(Number(@get('MemTotal')) / (1024 * 1024))
+    return "#{ram}MB"
+
 Portland.dockerInfo = new Portland.Models.DockerInfo()
