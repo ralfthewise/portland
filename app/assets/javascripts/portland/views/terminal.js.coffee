@@ -16,22 +16,24 @@ class Portland.Views.Terminal extends Portland.Views.BaseLayout
     @ws?.close()
 
   _initTerminal: () ->
-    @ws = new WebSocket("ws://localhost:8000/streaming/logs/#{@model.id}")
+    [availableWidth, availableHeight] = @_calculateTerminalDimensions()
+    @term = new window.Terminal(
+      rows: availableWidth
+      cols: availableHeight
+      useStyle: true
+      screenKeys: true
+    )
+    @term.open(@ui.terminalContainer[0])
+
+    scheme = if window.location.protocol is 'https:' then 'wss' else 'ws'
+    @ws = new WebSocket("#{scheme}://#{window.location.host}/streaming/logs/#{@model.id}")
     @ws.onopen = @_onWebsocketOpen
     @ws.onmessage = @_onWebsocketData
     @ws.onclose = @_onWebsocketClose
 
   _onWebsocketOpen: =>
-    @term = new window.Terminal(
-      cols: 80
-      rows: 24
-      useStyle: true
-      screenKeys: true
-    )
-    _.defer(@_resizeTerminal)
-
     @term.on('data', (data) => @ws.send(data))
-    @term.open(@ui.terminalContainer[0])
+    @_resizeTerminal() #hopefully this will inform the TTY of our terminal size
 
   _onWebsocketData: (data) =>
     @term.write(data.data)
@@ -40,7 +42,11 @@ class Portland.Views.Terminal extends Portland.Views.BaseLayout
     @term.destroy()
 
   _resizeTerminal: =>
+    [availableWidth, availableHeight] = @_calculateTerminalDimensions()
+    @term.resize(availableWidth, availableHeight)
+
+  _calculateTerminalDimensions: ->
     terminalContainerOffset = @ui.terminalContainer.offset()
     availableWidth = document.documentElement.clientWidth - terminalContainerOffset.left
     availableHeight = document.documentElement.clientHeight - terminalContainerOffset.top
-    @term.resize(Math.floor(availableWidth / 7), Math.floor(availableHeight / 16.1))
+    return [Math.floor(availableWidth / 6.8), Math.floor(availableHeight / 16.1)]

@@ -34,3 +34,7 @@ body { padding-top: 70px; }
   max-height: 300px;
   overflow: auto;
 }
+
+.terminal-container .terminal {
+  border: 8px inset rgb(192, 0, 0);
+}
