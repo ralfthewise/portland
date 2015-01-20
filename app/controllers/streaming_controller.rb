@@ -40,7 +40,8 @@ class StreamingController < ApplicationController
       tubesock.onclose do
         log('terminal closed')
         pty_reader.kill
-        Process.kill('KILL', pid)
+        Process.kill('INT', pid)
+        Process.waitpid(pid)
       end
     end
   end
