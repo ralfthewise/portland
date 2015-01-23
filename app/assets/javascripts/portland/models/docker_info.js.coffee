@@ -2,7 +2,7 @@
 
 class Portland.Models.DockerInfo extends Portland.Models.Base
   idAttribute: 'ID'
-  url: '/docker/info'
+  url: "#{Constants.DOCKER_API_PREFIX}/info"
 
   initialize: ->
     @set('version', new Portland.Models.DockerVersion())

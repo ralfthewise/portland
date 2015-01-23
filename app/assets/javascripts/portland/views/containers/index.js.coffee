@@ -6,7 +6,12 @@ class IndexItem extends Portland.Views.BaseLayout
     Bindable: {}
     Tooltips: {}
 
+  events:
+    'click .stop-btn': '_stopContainer'
+
   statusClass: -> if @model.isRunning() then 'label-success' else 'label-danger'
+
+  _stopContainer: -> @model.stop()
 
 class Portland.Views.ContainersIndex extends Portland.Views.BaseComposite
   template: 'containers/index'

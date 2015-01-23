@@ -1,4 +1,5 @@
 #= require marionette_app
+#= require constants
 #= require_self
 #= require_tree ./portland/lib
 #= require_tree ./portland/routers

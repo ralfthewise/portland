@@ -2,13 +2,17 @@ class Portland.Models.DockerContainer extends Portland.Models.Base
   mixin(@, MarionetteApp.Traits.CachableModel)
 
   idAttribute: 'Id'
-  url: -> "/docker/containers/#{@get('Id')}/json"
+  url: -> "#{Constants.DOCKER_API_PREFIX}/containers/#{@id}/json"
   path: -> "/portland/containers/#{@id}"
 
   fetchAndProcess: ->
     @fetch.apply(@, arguments).fail((xhr, textStatus, errorThrown) =>
       Portland.dockerContainers.remove(@) if xhr.status is 404
     )
+
+  stop: ->
+    @save({}, {type: 'POST', url: "#{Constants.DOCKER_API_PREFIX}/containers/#{@id}/stop"}).done =>
+      @model.set('Status', 'Exited')
 
   isRunning: -> @getStatus()?.indexOf('Exited') isnt 0
 
@@ -29,7 +33,7 @@ class Portland.Models.DockerContainer extends Portland.Models.Base
 
 class Portland.Collections.DockerContainer extends Portland.Collections.Base
   model: Portland.Models.DockerContainer
-  url:"/docker/containers/json?all=1"
+  url:"#{Constants.DOCKER_API_PREFIX}/containers/json?all=1"
 
   comparator: (a, b) ->
     [aRunning, bRunning] = [a.isRunning(), b.isRunning()]
