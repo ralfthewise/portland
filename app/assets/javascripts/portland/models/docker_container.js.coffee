@@ -14,22 +14,20 @@ class Portland.Models.DockerContainer extends Portland.Models.Base
     @save({}, {type: 'POST', url: "#{Constants.DOCKER_API_PREFIX}/containers/#{@id}/stop"}).done =>
       @model.set('Status', 'Exited')
 
-  isRunning: -> @getStatus()?.indexOf('Exited') isnt 0
+  isRunning: -> @get('Status')?.indexOf('Exited') isnt 0
 
-  getName: ->
-    [name, names] = [@get('Name'), @get('Names')]
-    return if name? then name else _.last(names)
+  #fixup stupid docker API responses
+  parse: (response) ->
+    response.Name = _.last(response.Names) if response.Names?
+    response.Command = response.Config.Cmd?.join(' ') if response.Config?
 
-  getCommand: ->
-    [command, config] = [@get('Command'), @get('Config')]
-    return if command? then command else config?.Cmd?.join(' ')
-
-  getStatus: ->
     #TODO: calculate this better based on State.StartedAt
-    [status, state] = [@get('Status'), @get('State')]
-    return status if status?
-    return 'Up a few seconds' if state?.Running
-    return 'Exited'
+    response.Status = switch
+      when response.Status? then response.Status
+      when response.State?.Running then 'Up a few seconds'
+      else 'Exited'
+
+    return super(response)
 
 class Portland.Collections.DockerContainer extends Portland.Collections.Base
   model: Portland.Models.DockerContainer
@@ -39,6 +37,6 @@ class Portland.Collections.DockerContainer extends Portland.Collections.Base
     [aRunning, bRunning] = [a.isRunning(), b.isRunning()]
     return -1 if aRunning and not bRunning
     return 1 if not aRunning and bRunning
-    return a.getName().localeCompare(b.getName())
+    return a.get('Name')?.localeCompare(b.get('Name'))
 
 Portland.dockerContainers = new Portland.Collections.DockerContainer()
