@@ -15,5 +15,5 @@
 window.Portland = MarionetteApp
 
 Portland.app.addInitializer(() ->
-  new Portland.Lib.DockerMonitor()
+  @dockerMonitor = new Portland.Lib.DockerMonitor()
 )

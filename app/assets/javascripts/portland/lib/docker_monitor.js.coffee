@@ -1,13 +1,10 @@
 class Portland.Lib.DockerMonitor
   constructor: ->
-    Portland.dockerInfo.fetch()
-    @_refresh()
-
     @queue = {update: {}, remove: {}}
 
-    @dispatcher = new WebSocketRails(window.location.host + '/websocket')
-    @eventChannel = @dispatcher.subscribe('docker_events')
-    @eventChannel.bind('new', @_onDockerEvent)
+    Portland.dockerInfo.fetch()
+    @_refresh()
+    @_initDispatcher()
 
   _onDockerEvent: (dockerEvent) =>
     switch dockerEvent.status
@@ -33,3 +30,12 @@ class Portland.Lib.DockerMonitor
     Portland.dockerImages.fetch()
     Portland.dockerContainers.fetch()
     window.setTimeout(@_refresh, 1000 * 60 * 5)
+
+  _initDispatcher: =>
+    if @dispatcher?
+      @dispatcher.reconnect()
+    else
+      @dispatcher = new WebSocketRails(window.location.host + '/websocket')
+      @eventChannel = @dispatcher.subscribe('docker_events')
+      @eventChannel.bind('new', @_onDockerEvent)
+      @dispatcher.bind('connection_error', @_initDispatcher)
