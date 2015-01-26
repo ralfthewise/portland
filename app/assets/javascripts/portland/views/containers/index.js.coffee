@@ -8,10 +8,12 @@ class IndexItem extends Portland.Views.BaseLayout
 
   events:
     'click .stop-btn': '_stopContainer'
+    'click .delete-btn': '_deleteContainer'
 
   statusClass: -> if @model.isRunning() then 'label-success' else 'label-danger'
 
   _stopContainer: -> @model.stop()
+  _deleteContainer: -> @model.delete()
 
 class Portland.Views.ContainersIndex extends Portland.Views.BaseComposite
   template: 'containers/index'

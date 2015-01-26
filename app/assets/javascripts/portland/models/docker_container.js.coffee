@@ -10,11 +10,30 @@ class Portland.Models.DockerContainer extends Portland.Models.Base
       Portland.dockerContainers.remove(@) if xhr.status is 404
     )
 
-  stop: ->
-    @save({}, {type: 'POST', url: "#{Constants.DOCKER_API_PREFIX}/containers/#{@id}/stop"}).done =>
-      @set('Status', 'Exited')
-
   isRunning: -> @get('Status')?.indexOf('Exited') isnt 0
+
+  stop: ->
+    deferred = $.Deferred()
+    return deferred.resolve() unless @isRunning()
+    @save({}, {type: 'POST', url: "#{Constants.DOCKER_API_PREFIX}/containers/#{@id}/stop"}).done(=>
+      @set('Status', 'Exited')
+      deferred.resolve()
+    ).fail -> deferred.reject.apply(@, arguments)
+    return deferred
+
+  kill: ->
+    deferred = $.Deferred()
+    return deferred.resolve() unless @isRunning()
+    @save({}, {type: 'POST', url: "#{Constants.DOCKER_API_PREFIX}/containers/#{@id}/kill"}).done(=>
+      @set('Status', 'Exited')
+      deferred.resolve()
+    ).fail -> deferred.reject.apply(@, arguments)
+    return deferred
+
+  delete: ->
+    @stop().done =>
+      $.ajax({type: 'DELETE', url: "#{Constants.DOCKER_API_PREFIX}/containers/#{@id}?force=1"}).done =>
+        Portland.dockerContainers.remove(@)
 
   #fixup stupid docker API responses
   parse: (response) ->
