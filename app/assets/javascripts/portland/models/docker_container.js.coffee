@@ -12,6 +12,10 @@ class Portland.Models.DockerContainer extends Portland.Models.Base
 
   isRunning: -> @get('Status')?.indexOf('Exited') isnt 0
 
+  start: ->
+    return @save({}, {type: 'POST', url: "#{Constants.DOCKER_API_PREFIX}/containers/#{@id}/start"}).done =>
+      @set('Status', 'Up a few seconds')
+
   stop: ->
     deferred = $.Deferred()
     return deferred.resolve() unless @isRunning()

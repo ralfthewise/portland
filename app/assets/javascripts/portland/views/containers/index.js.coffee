@@ -2,18 +2,12 @@ class IndexItem extends Portland.Views.BaseLayout
   template: 'containers/index_item'
   tagName: 'tr'
 
-  behaviors:
-    Bindable: {}
-    Tooltips: {}
+  regions: {actionsRegion: '.actions-region'}
 
-  events:
-    'click .stop-btn': '_stopContainer'
-    'click .delete-btn': '_deleteContainer'
+  onShow: ->
+    @actionsRegion.show(new Portland.Views.ContainersActions({@model}))
 
   statusClass: -> if @model.isRunning() then 'label-success' else 'label-danger'
-
-  _stopContainer: -> @model.stop()
-  _deleteContainer: -> @model.delete()
 
 class Portland.Views.ContainersIndex extends Portland.Views.BaseComposite
   template: 'containers/index'

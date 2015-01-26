@@ -1,8 +1,12 @@
+class Portland.Views.BaseView extends Backbone.Marionette.ItemView
+  Backbone.Bb.View.mixin(@::)
+
+  behaviors: Bindable: {}
+
 class Portland.Views.BaseLayout extends Backbone.Marionette.LayoutView
   Backbone.Bb.View.mixin(@::)
 
-  behaviors:
-    Bindable: {}
+  behaviors: Bindable: {}
 
 class Portland.Views.BaseCollection extends Backbone.Marionette.CollectionView
 
