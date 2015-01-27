@@ -5,8 +5,6 @@ Rails.application.routes.draw do
   get '/streaming/attach/:container_id' => 'streaming#attach'
 
   scope '/api', :constraints => { :format => 'json' }, :defaults => { :format => 'json' } do
-    resources :images
-    resources :containers
     get '/filesystem(/*path)' => 'filesystem#path'
   end
 
