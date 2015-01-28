@@ -44,16 +44,6 @@ Eye.application 'portland' do
     stop_signals [:INT, 15.seconds, :KILL]
   end
 
-  process :terminal do
-    pid_file '/tmp/terminal.pid'
-    stdall('/tmp/terminal.log')
-    daemonize true
-    start_command './terminal/run.sh'
-    stop_signals [:INT, 15.seconds, :KILL]
-    trigger :stop_children, :event => [:stopped, :crashed]
-    monitor_children
-  end
-
   process :docker_api do
     pid_file '/tmp/docker_api.pid'
     daemonize true

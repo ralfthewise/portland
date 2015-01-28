@@ -1,3 +1,4 @@
+#= require term
 #= require marionette_app
 #= require constants
 #= require_self
