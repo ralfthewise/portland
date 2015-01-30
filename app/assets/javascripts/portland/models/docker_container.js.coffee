@@ -5,6 +5,11 @@ class Portland.Models.DockerContainer extends Portland.Models.Base
   url: -> "#{Constants.DOCKER_API_PREFIX}/containers/#{@id}/json"
   path: -> "/portland/containers/#{@id}"
 
+  initialize: (attributes, options) ->
+    super
+    if not @has('Image')
+      if @has('ImageName') then @_lookupImageId() else @once('change:ImageName', @_lookupImageId)
+
   fetchAndProcess: ->
     @fetch.apply(@, arguments).fail((xhr, textStatus, errorThrown) =>
       Portland.dockerContainers.remove(@) if xhr.status is 404
@@ -41,20 +46,26 @@ class Portland.Models.DockerContainer extends Portland.Models.Base
 
   #fixup stupid docker API responses
   parse: (response) ->
-    return unless response?
+    if response?
+      if response.Config?
+        #we've inspected one container for a more detailed response
+        response.Command = response.Config.Cmd.join(' ') if response.Config.Cmd?
+        response.Image = Portland.Models.DockerImage.find(response.Image, {fetch: false})
+        #TODO: calculate this better based on State.StartedAt
+        response.Status = if response.State.Running then 'Up a few seconds' else "Exited (#{response.State.ExitCode})"
 
-    if response.Config?
-      #we've inspected one container for a more detailed response
-      response.Command = response.Config.Cmd.join(' ') if response.Config.Cmd?
-      response.Image = response.Config.Image
-      #TODO: calculate this better based on State.StartedAt
-      response.Status = if response.State.Running then 'Up a few seconds' else "Exited (#{response.State.ExitCode})"
-
-    else
-      #it's a less detailed response from fetching all the containers
-      response.Name = _.last(response.Names) if response.Names?
+      else
+        #it's a less detailed response from fetching all the containers
+        response.Name = _.last(response.Names) if response.Names?
+        response.ImageName = response.Image
+        delete response.Image
 
     return super(response)
+
+  _lookupImageId: =>
+    Portland.dockerImages.loaded.done =>
+      image = Portland.dockerImages.findWhere({Name: @get('ImageName')})
+      @set(Image: image) if image?
 
 class Portland.Collections.DockerContainer extends Portland.Collections.Base
   model: Portland.Models.DockerContainer
