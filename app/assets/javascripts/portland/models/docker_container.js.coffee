@@ -43,16 +43,16 @@ class Portland.Models.DockerContainer extends Portland.Models.Base
   parse: (response) ->
     return unless response?
 
-    response.Name = _.last(response.Names) if response.Names?
     if response.Config?
-      response.Command = response.Config.Cmd?.join(' ')
+      #we've inspected one container for a more detailed response
+      response.Command = response.Config.Cmd.join(' ') if response.Config.Cmd?
       response.Image = response.Config.Image
+      #TODO: calculate this better based on State.StartedAt
+      response.Status = if response.State.Running then 'Up a few seconds' else "Exited (#{response.State.ExitCode})"
 
-    #TODO: calculate this better based on State.StartedAt
-    response.Status = switch
-      when response.Status? then response.Status
-      when response.State?.Running then 'Up a few seconds'
-      else "Exited #{if response.State? then "(#{response.State.ExitCode})" else ''}"
+    else
+      #it's a less detailed response from fetching all the containers
+      response.Name = _.last(response.Names) if response.Names?
 
     return super(response)
 
