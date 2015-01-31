@@ -11,8 +11,6 @@ class Portland.Views.ContainersActions extends Portland.Views.BaseView
     'click .stop-btn': '_stopContainer'
     'click .delete-btn': '_deleteContainer'
 
-  statusClass: -> if @model.isRunning() then 'label-success' else 'label-danger'
-
   _startContainer: -> @model.start()
   _stopContainer: -> @model.stop()
   _deleteContainer: -> @model.delete()

@@ -16,6 +16,10 @@ class Portland.Models.DockerImage extends Portland.Models.Base
   getExposedPorts: ->
     return @get('ExposedPorts')?.join(', ')
 
+  delete: ->
+    $.ajax({type: 'DELETE', url: "#{Constants.DOCKER_API_PREFIX}/images/#{@id}"}).done =>
+      Portland.dockerImages.remove(@)
+
   parse: (response) ->
     if response?
       if response.Config?
