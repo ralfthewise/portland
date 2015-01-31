@@ -13,9 +13,18 @@ class Portland.Models.DockerImage extends Portland.Models.Base
     size = Math.floor(Number(@get('VirtualSize')) / (1024 * 1024))
     return "#{size}MB"
 
+  getExposedPorts: ->
+    return @get('ExposedPorts')?.join(', ')
+
   parse: (response) ->
     if response?
-      response.Name = _.last(response.RepoTags)
+      if response.Config?
+        #we've inspected one image for a more detailed response
+        response.ExposedPorts = _.keys(response.Config.ExposedPorts)
+
+      else
+        #it's a less detailed response from fetching all the images
+        response.Name = _.last(response.RepoTags)
     return super(response)
 
 class Portland.Collections.DockerImage extends Portland.Collections.Base
