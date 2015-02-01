@@ -1,4 +1,5 @@
 bindingRegex = /^([\w-]+):(!?[\w.-]+)(?:\|([\w-]+))?$/
+classBindingRegex = /^class-([\w-]+)$/
 
 #constructs a closure to propogate Backbone changes to the view
 constructCallbackToPropagateBbChangesToView = (view, $el, elAttribute, bindingProperties, filters) ->
@@ -94,13 +95,29 @@ constructCallbackToAttachBindingsToView = (view, toView, attachedBindings, bindi
 
 updateView = ($el, elAttribute, value, previousValue) ->
   switch elAttribute
+    #text:model.someProperty
     when 'text' then $el.text(if value? then value.toString() else '')
+
+    #displayed:model.someBooleanProperty
     when 'displayed'
       if !!value then $el.show() else $el.hide()
+
+    #class:model.someProperty
     when 'class'
       $el.removeClass(previousValue) if previousValue?
       $el.addClass(value) if value?
-    else $el.attr(elAttribute, value)
+
+    else
+
+      #class-myclass:model.someProperty
+      classMatch = elAttribute.match(classBindingRegex)
+      if classMatch?
+        className = classMatch[1]
+        if !!value then $el.addClass(className) else $el.removeClass(className)
+
+      #everything else (just assume it is an attribute on the element)
+      else
+        $el.attr(elAttribute, value)
 
 processPropertyOfBackboneContext = (bindingChain, context, model, property) ->
   if _.isFunction(context[property])
