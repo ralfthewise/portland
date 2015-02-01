@@ -18,9 +18,9 @@ class Portland.Routers.NavLeft extends Portland.Routers.BaseSubrouter
     @region.currentView.updateActiveView('images')
 
   _imagesMain: (id) ->
-    if @_shouldShowView(Portland.Views.NavLeftMain)
-      @region.show(new Portland.Views.NavLeftMain())
-    @region.currentView.updateActiveView('images')
+    if @_shouldShowView(Portland.Views.NavLeftImages)
+      @region.show(new Portland.Views.NavLeftImages())
+    @region.currentView.updateActiveImage(id)
 
   _containers: () ->
     if @_shouldShowView(Portland.Views.NavLeftMain)
