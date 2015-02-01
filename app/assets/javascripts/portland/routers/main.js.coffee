@@ -9,26 +9,13 @@ class Portland.Routers.Main extends Backbone.Marionette.AppRouter
   getRoot: -> '/portland'
 
   initialize: (options) ->
-    @mainLayout = new Portland.Views.Main()
-    Portland.app.mainRegion.show(@mainLayout)
-    @listenTo(Portland.app.vent, 'router:navigate', @navigateTo)
+    mainLayout = new Portland.Views.Main()
+    Portland.app.mainRegion.show(mainLayout)
+    @listenTo(Portland.app.vent, 'router:navigate', @_navigateTo)
+    @on('route', @_onRouted)
 
-  navigateTo: (path, options = {}) ->
+  _navigateTo: (path, options = {}) ->
     @navigate(path, _.defaults({}, options, {trigger: true}))
 
-  dashboard: () ->
-    @mainLayout.mainContentRegion.show(new Portland.Views.Dashboard())
-
-  images: () ->
-    @mainLayout.mainContentRegion.show(new Portland.Views.ImagesIndex())
-
-  imagesMain: (id) ->
-    model = Portland.Models.DockerImage.find(id, {fetch: true})
-    @mainLayout.mainContentRegion.show(new Portland.Views.ImagesMain({model}))
-
-  containers: () ->
-    @mainLayout.mainContentRegion.show(new Portland.Views.ContainersIndex())
-
-  containersMain: (id) ->
-    model = Portland.Models.DockerContainer.find(id, {fetch: true})
-    @mainLayout.mainContentRegion.show(new Portland.Views.ContainersMain({model}))
+  _onRouted: (routeName, args) ->
+    Portland.app.vent.trigger("routed:#{routeName}", args...)

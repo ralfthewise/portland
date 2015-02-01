@@ -12,12 +12,14 @@ class Portland.Views.Main extends Backbone.Marionette.LayoutView
       selector: '.modal-region'
       regionClass: Portland.Regions.Modal
 
-
   onShow: () ->
+    @mainContentRouter = new Portland.Routers.MainContent(@mainContentRegion, Portland.app.vent)
+    @leftNavRouter = new Portland.Routers.NavLeft(@leftNavRegion, Portland.app.vent)
+
     @listenTo(Portland.app.vent, 'modal:show', @_showModal)
     @navbarRegion.show(new Portland.Views.Navbar())
-    @leftNavRegion.show(new Portland.Views.NavLeftMain())
     @alertsRegion.show(new Portland.Views.Alerts())
+
     #@mainContentRegion.show(new Portland.Views.Dashboard())
     #filesystem = new Portland.Models.Filesystem({path: '/'})
     #filesystem.fetch()
