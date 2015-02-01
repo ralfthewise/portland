@@ -1,5 +1,6 @@
 class Portland.Routers.NavLeft extends Portland.Routers.BaseSubrouter
   handledRoutes:
+    'default': '_dashboard'
     'dashboard': '_dashboard'
     'images': '_images'
     'imagesMain': '_imagesMain'
@@ -7,16 +8,29 @@ class Portland.Routers.NavLeft extends Portland.Routers.BaseSubrouter
     'containersMain': '_containersMain'
 
   _dashboard: () ->
-    @region.show(new Portland.Views.NavLeftMain())
+    if @_shouldShowView(Portland.Views.NavLeftMain)
+      @region.show(new Portland.Views.NavLeftMain())
+    @region.currentView.updateActiveView('dashboard')
 
   _images: () ->
-    @region.show(new Portland.Views.NavLeftMain())
+    if @_shouldShowView(Portland.Views.NavLeftMain)
+      @region.show(new Portland.Views.NavLeftMain())
+    @region.currentView.updateActiveView('images')
 
   _imagesMain: (id) ->
-    @region.show(new Portland.Views.NavLeftMain())
+    if @_shouldShowView(Portland.Views.NavLeftMain)
+      @region.show(new Portland.Views.NavLeftMain())
+    @region.currentView.updateActiveView('images')
 
   _containers: () ->
-    @region.show(new Portland.Views.NavLeftMain())
+    if @_shouldShowView(Portland.Views.NavLeftMain)
+      @region.show(new Portland.Views.NavLeftMain())
+    @region.currentView.updateActiveView('containers')
 
   _containersMain: (id) ->
-    @region.show(new Portland.Views.NavLeftMain())
+    if @_shouldShowView(Portland.Views.NavLeftMain)
+      @region.show(new Portland.Views.NavLeftMain())
+    @region.currentView.updateActiveView('containers')
+
+  _shouldShowView: (viewType) ->
+    not (@region.currentView? and @region.currentView instanceof viewType)

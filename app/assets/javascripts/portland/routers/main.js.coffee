@@ -18,4 +18,5 @@ class Portland.Routers.Main extends Backbone.Marionette.AppRouter
     @navigate(path, _.defaults({}, options, {trigger: true}))
 
   _onRouted: (routeName, args) ->
+    routeName = 'default' if _.isEmpty(routeName)
     Portland.app.vent.trigger("routed:#{routeName}", args...)

@@ -1,5 +1,6 @@
 class Portland.Routers.MainContent extends Portland.Routers.BaseSubrouter
   handledRoutes:
+    'default': '_dashboard'
     'dashboard': '_dashboard'
     'images': '_images'
     'imagesMain': '_imagesMain'
