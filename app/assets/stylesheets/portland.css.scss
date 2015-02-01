@@ -38,3 +38,11 @@ body { padding-top: 70px; }
 .terminal-container .terminal {
   border: 8px inset rgb(192, 0, 0);
 }
+
+.label.pill-indicator {
+  display: inline-block;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  margin-bottom: -2px;
+}

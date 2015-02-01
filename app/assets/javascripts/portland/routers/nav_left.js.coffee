@@ -28,9 +28,9 @@ class Portland.Routers.NavLeft extends Portland.Routers.BaseSubrouter
     @region.currentView.updateActiveView('containers')
 
   _containersMain: (id) ->
-    if @_shouldShowView(Portland.Views.NavLeftMain)
-      @region.show(new Portland.Views.NavLeftMain())
-    @region.currentView.updateActiveView('containers')
+    if @_shouldShowView(Portland.Views.NavLeftContainers)
+      @region.show(new Portland.Views.NavLeftContainers())
+    @region.currentView.updateActiveContainer(id)
 
   _shouldShowView: (viewType) ->
     not (@region.currentView? and @region.currentView instanceof viewType)
