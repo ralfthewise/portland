@@ -3,6 +3,7 @@ class Portland.Views.Main extends Backbone.Marionette.LayoutView
 
   regions:
     navbarRegion: '.navbar-region'
+    leftNavRegion: '.left-nav-region'
     alertsRegion: '.alerts-region'
     mainContentRegion: '.main-content-region'
     terminalRegion: '.terminal-region'
@@ -15,6 +16,7 @@ class Portland.Views.Main extends Backbone.Marionette.LayoutView
   onShow: () ->
     @listenTo(Portland.app.vent, 'modal:show', @_showModal)
     @navbarRegion.show(new Portland.Views.Navbar())
+    @leftNavRegion.show(new Portland.Views.NavLeftMain())
     @alertsRegion.show(new Portland.Views.Alerts())
     #@mainContentRegion.show(new Portland.Views.Dashboard())
     #filesystem = new Portland.Models.Filesystem({path: '/'})
