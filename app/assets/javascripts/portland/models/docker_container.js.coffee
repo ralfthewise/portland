@@ -51,8 +51,10 @@ class Portland.Models.DockerContainer extends Portland.Models.Base
         #we've inspected one container for a more detailed response
         response.Command = response.Config.Cmd.join(' ') if response.Config.Cmd?
         response.Image = Portland.Models.DockerImage.find(response.Image, {fetch: false})
-        #TODO: calculate this better based on State.StartedAt
-        response.Status = if response.State.Running then 'Up a few seconds' else "Exited (#{response.State.ExitCode})"
+        if response.State.Running
+          response.Status = "Up #{moment(response.State.StartedAt).fromNow(true)}"
+        else
+          response.Status = "Exited (#{response.State.ExitCode}) #{moment(response.State.FinishedAt).fromNow()}"
 
       else
         #it's a less detailed response from fetching all the containers
