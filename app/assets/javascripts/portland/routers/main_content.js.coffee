@@ -6,6 +6,7 @@ class Portland.Routers.MainContent extends Portland.Routers.BaseSubrouter
     'imagesMain': '_imagesMain'
     'containers': '_containers'
     'containersMain': '_containersMain'
+    'containersRun': '_containersRun'
 
   _dashboard: () ->
     @region.show(new Portland.Views.Dashboard())
@@ -23,3 +24,6 @@ class Portland.Routers.MainContent extends Portland.Routers.BaseSubrouter
   _containersMain: (id) ->
     model = Portland.Models.DockerContainer.find(id, {fetch: true})
     @region.show(new Portland.Views.ContainersMain({model}))
+
+  _containersRun: (imageId) ->
+    @region.show(new Portland.Views.ContainersRun({imageId}))

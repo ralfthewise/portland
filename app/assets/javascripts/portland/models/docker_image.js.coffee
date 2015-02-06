@@ -4,6 +4,7 @@ class Portland.Models.DockerImage extends Portland.Models.Base
   idAttribute: 'Id'
   url: -> "#{Constants.DOCKER_API_PREFIX}/images/#{@id}/json"
   path: -> "/portland/images/#{@id}"
+  runPath: -> "/portland/run/#{@id}"
 
   getCreated: ->
     created = @get('Created')

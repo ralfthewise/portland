@@ -7,8 +7,6 @@ class Portland.Views.ImagesActions extends Portland.Views.BaseView
     Tooltips: {}
 
   events:
-    'click .start-btn': '_startImage'
     'click .delete-btn': '_deleteImage'
 
-  _startImage: -> console.log('starting container...')
   _deleteImage: -> @model.delete()

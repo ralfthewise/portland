@@ -6,6 +6,7 @@ class Portland.Routers.NavLeft extends Portland.Routers.BaseSubrouter
     'imagesMain': '_imagesMain'
     'containers': '_containers'
     'containersMain': '_containersMain'
+    'containersRun': '_containers'
 
   _dashboard: () ->
     if @_shouldShowView(Portland.Views.NavLeftMain)

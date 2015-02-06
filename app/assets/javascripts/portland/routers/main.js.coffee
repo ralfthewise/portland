@@ -5,6 +5,7 @@ class Portland.Routers.Main extends Backbone.Marionette.AppRouter
     'images/:id': 'imagesMain'
     'containers': 'containers'
     'containers/:id': 'containersMain'
+    'run(/:imageId)': 'containersRun'
 
   getRoot: -> '/portland'
 
