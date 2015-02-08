@@ -3,12 +3,3 @@ $icon-font-path: "bootstrap-sass-official/";
 @import "bootstrap-sass-official/bootstrap-sprockets";
 @import "bootstrap-sass-official/bootstrap";
 @import "bootswatch/flatly/bootswatch";
-
-//allow setting anything to primary color
-.primary-color {
-  color: $brand-primary;
-
-  &.hover:hover {
-    color: $brand-primary;
-  }
-}
