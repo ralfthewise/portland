@@ -5,17 +5,26 @@ class Portland.Views.ContainersRun extends Portland.Views.BaseLayout
     imageSelect: '.image-selection'
 
   onShow: ->
-    @ui.imageSelect.typeahead({hint: true, highlight: true, minLength: 1},
-      name: 'images'
-      displayKey: 'name'
-      source: @_searchImages
+    @ui.imageSelect.selectize(
+      valueField: 'id'
+      labelField: 'name'
+      searchField: 'name'
+      closeAfterSelect: true
+      preload: true
+      selectOnTab: true
+      load: @_searchImages
+      score: @_scoreItem
     )
 
-  _searchImages: (query, cb) ->
-    results = []
-    Portland.dockerImages.each (image) ->
-      imageName = image.get('Name')
-      if not query or imageName?.toLowerCase().indexOf(query.toLowerCase()) >= 0
-        results.push({name: image.get('Name')})
+  _searchImages: (query, cb) =>
+    if @loaded
+      cb([])
+    else
+      @loaded = true
+      Portland.dockerImages.loaded.done ->
+        cb(Portland.dockerImages.map((i) -> {id: i.id, name: i.get('Name').toLowerCase()}))
 
-    cb(results)
+  _scoreItem: (query) ->
+    query = query.toLowerCase()
+    return (item) ->
+      return if item.name.indexOf(query) >= 0 then 1 else 0

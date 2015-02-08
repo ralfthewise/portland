@@ -2,7 +2,7 @@
 #= require jquery
 #= require moment
 #= require bootstrap-sass-official
-#= require typeahead.js/typeahead.jquery
+#= require selectize/standalone/selectize
 #= require turbolinks
 #= require underscore
 #= require backbone

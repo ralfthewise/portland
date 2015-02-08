@@ -115,9 +115,13 @@ GEM
     rails-assets-bootstrap-sass-official (3.3.1)
       rails-assets-jquery (>= 1.9.0)
     rails-assets-jquery (2.1.1)
+    rails-assets-microplugin (0.0.3)
     rails-assets-moment (2.9.0)
-    rails-assets-typeahead.js (0.10.5)
-      rails-assets-jquery (>= 1.7)
+    rails-assets-selectize (0.12.0)
+      rails-assets-jquery (>= 1.7.0)
+      rails-assets-microplugin (~> 0.0.0)
+      rails-assets-sifter (~> 0.4.0)
+    rails-assets-sifter (0.4.0)
     rails-assets-underscore (1.6.0)
     railties (4.1.7)
       actionpack (= 4.1.7)
@@ -199,7 +203,7 @@ DEPENDENCIES
   rails-assets-backbone.marionette
   rails-assets-bootstrap-sass-official
   rails-assets-moment
-  rails-assets-typeahead.js
+  rails-assets-selectize
   sass
   sdoc (~> 0.4.0)
   spring
