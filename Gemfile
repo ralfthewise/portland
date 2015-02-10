@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
-source 'https://rails-assets.org'
+
+gem 'bundler', '>= 1.7.0'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.7'
@@ -46,12 +47,18 @@ gem 'puma'
 gem 'sass', require: 'sass'
 gem 'httparty'
 gem 'modernizr-rails'
-gem 'rails-assets-bootstrap-sass-official'
-gem 'rails-assets-backbone.marionette'
-gem 'rails-assets-moment'
-gem 'rails-assets-selectize'
 gem 'handlebars_assets'
 gem 'autoprefixer-rails'
 gem 'eye'
 gem 'websocket-rails'
 gem 'tubesock'
+
+source 'https://rails-assets.org' do
+  gem 'rails-assets-bootstrap-sass-official', '3.3.2'
+  gem 'rails-assets-bootswatch'
+  #would like to do this but https://github.com/rails-assets/rails-assets/issues/203 prevents it
+  #gem 'rails-assets-backbone.marionette', '2.3.2'
+  gem 'rails-assets-marionette-gem', '2.3.2'
+  gem 'rails-assets-moment'
+  gem 'rails-assets-selectize'
+end

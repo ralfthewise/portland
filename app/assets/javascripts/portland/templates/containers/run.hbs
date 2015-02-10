@@ -1,10 +1,49 @@
 <div class="panel panel-info">
   <div class="panel-heading">Run New Container</div>
   <div class="panel-body">
-    <div class="row">
-      <div class="col-xs-3"><span class="pull-right"><strong>Image:</strong></span></div>
-      <div class="col-xs-3">
-        <select class="image-selection" placeholder="Select an image...">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <h4>Pick Image</h4>
+
+        <div class="form-horizontal">
+          <div class="form-group form-group-lg">
+            <label class="col-xs-3 control-label" for="inputImage">Image</label>
+            <div class="col-xs-3">
+              <select id="inputImage" class="image-selection" placeholder="Select an image..."></select>
+            </div>
+          </div>
+
+          <div class="form-group form-group-lg">
+            <label class="col-xs-3 control-label" for="inputImage2">Image</label>
+            <div class="col-xs-3">
+              <input id="inputImage2" type="text" class="input-lg" placeholder="Testing Here" />
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-3"><span class="pull-right"><strong>Foo:</strong></span></div>
+          <div class="col-xs-3">
+            <input type="text" class="form-control input-lg" placeholder="Testing Here" />
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <form class="form-horizontal">
+          <div class="form-group form-group-lg">
+            <label class="col-sm-2 control-label" for="formGroupInputLarge">Large label</label>
+            <div class="col-sm-10">
+              <input class="form-control" type="text" id="formGroupInputLarge" placeholder="Large input">
+            </div>
+          </div>
+          <div class="form-group form-group-sm">
+            <label class="col-sm-2 control-label" for="formGroupInputSmall">Small label</label>
+            <div class="col-sm-10">
+              <input class="form-control" type="text" id="formGroupInputSmall" placeholder="Small input">
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   </div>
