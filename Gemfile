@@ -54,11 +54,9 @@ gem 'websocket-rails'
 gem 'tubesock'
 
 source 'https://rails-assets.org' do
-  gem 'rails-assets-bootstrap-sass-official', '3.3.2'
+  gem 'rails-assets-bootstrap-sass-official', '3.3.3'
   gem 'rails-assets-bootswatch'
-  #would like to do this but https://github.com/rails-assets/rails-assets/issues/203 prevents it
-  #gem 'rails-assets-backbone.marionette', '2.3.2'
-  gem 'rails-assets-marionette-gem', '2.3.2'
+  gem 'rails-assets-marionette', '2.3.2'
   gem 'rails-assets-moment'
   gem 'rails-assets-selectize'
 end

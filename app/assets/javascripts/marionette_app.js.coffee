@@ -8,13 +8,11 @@
 #= require backbone
 #= require backbone.babysitter
 #= require backbone.wreqr
-#= require marionette-gem
+#= require marionette
 #= require Backbone.ModelBinder
 #= require handlebars.runtime
 #= require_tree ./lib
 #= require_self
-
-# if https://github.com/rails-assets/rails-assets/issues/203 gets fixed we should go back to #= require backbone.marionette instead of #= require marionette-gem
 
 window.MarionetteApp =
   app: new Backbone.Marionette.Application()

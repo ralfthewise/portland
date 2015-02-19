@@ -23,6 +23,8 @@ module Portland
     config.autoload_paths << Rails.root.join('lib')
 
     config.assets.precompile << %r(bootstrap-sass-official/assets/fonts/bootstrap-sass-official/[\w-]+\.(?:eot|svg|ttf|woff)$)
+    #config.assets.precompile << %r(bootstrap/assets/fonts/bootstrap/[\w-]+\.(?:eot|svg|ttf|woff)$)
+    #config.assets.precompile << %r(bootswatch/app/assets/fonts/bootswatch/fonts/[\w-]+\.(?:eot|svg|ttf|woff)$)
 
     ## Bower asset paths
     #Rails.root.join('vendor', 'assets', 'bower_components').to_s.tap do |bower_path|
