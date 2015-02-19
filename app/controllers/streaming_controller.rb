@@ -10,6 +10,10 @@ class StreamingController < ApplicationController
     stream("docker logs --tail=1000 -f #{params[:container_id]}")
   end
 
+  def interact
+    stream("docker exec -it #{params[:container_id]} bash -l")
+  end
+
   def attach
     stream("docker attach #{params[:container_id]}")
   end

@@ -1,12 +1,21 @@
 <div class="panel panel-info">
   <div class="panel-heading"><span data-bb="text:model.Name"></span><span class="actions-region pull-right"></span></div>
   <div class="panel-body">
-    <div><strong>Image:</strong> <span data-bb="text:model.Image.Name"></span></div>
-    <div><strong>Command:</strong> <span data-bb="text:model.Command"></span></div>
-    <div><strong>Status:</strong> <span class="label" data-bb="text:model.Status,class:statusClass"></span></div>
+    <div class="row">
+      <div class="col-xs-12">
+        <div><strong>Image:</strong> <span data-bb="text:model.Image.Name"></span></div>
+        <div><strong>Command:</strong> <span data-bb="text:model.Command"></span></div>
+        <div><strong>Status:</strong> <span class="label" data-bb="text:model.Status,class:statusClass"></span></div>
+      </div>
+    </div>
 
     <div class="row">
       <div class="col-xs-12">
+        <ul class="nav nav-tabs terminal-tabs">
+          <li role="presentation" class="tab-logs active"><a>Logs</a></li>
+          <li role="presentation" class="tab-interact" data-bb="class-disabled:!model.isRunning"><a>Interact</a></li>
+          <li role="presentation" class="tab-attach" data-bb="class-disabled:!model.isRunning"><a>Attach</a></li>
+        </ul>
         <div class="terminal-region"></div>
       </div>
     </div>

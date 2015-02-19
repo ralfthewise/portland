@@ -48,6 +48,14 @@ body { padding-top: 70px; }
   margin-bottom: -2px;
 }
 
+.terminal-tabs {
+  margin-top: 12px;
+
+  li:not(.active) a {
+    cursor: pointer;
+  }
+}
+
 .form-horizontal .form-group .selectize-input {
   margin-top: 4px;
 }

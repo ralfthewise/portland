@@ -4,7 +4,8 @@ class Portland.Views.Terminal extends Portland.Views.BaseLayout
   ui:
     terminalContainer: '.terminal-container'
 
-  initialize: ->
+  initialize: (options) ->
+    @terminalType = options.type
     @_resizeTerminalDebounced = _.debounce(@_resizeTerminal, 500)
 
   onShow: ->
@@ -15,18 +16,20 @@ class Portland.Views.Terminal extends Portland.Views.BaseLayout
     $(window).off('resize', @_resizeTerminalDebounced)
     @ws?.close()
 
+  websocketPath: ->
+    return "/streaming/#{@terminalType}/#{@model.id}"
+
   _initTerminal: () ->
     [availableWidth, availableHeight] = @_calculateTerminalDimensions()
     @term = new window.Terminal(
       rows: availableWidth
       cols: availableHeight
       useStyle: true
-      screenKeys: true
     )
     @term.open(@ui.terminalContainer[0])
 
     scheme = if window.location.protocol is 'https:' then 'wss' else 'ws'
-    @ws = new WebSocket("#{scheme}://#{window.location.host}/streaming/logs/#{@model.id}")
+    @ws = new WebSocket("#{scheme}://#{window.location.host}#{@websocketPath()}")
     @ws.onopen = @_onWebsocketOpen
     @ws.onmessage = @_onWebsocketData
     @ws.onclose = @_onWebsocketClose
