@@ -14,7 +14,9 @@ class Portland.Lib.DockerMonitor
         @_processQueue()
       when 'destroy'
         c = Portland.Models.DockerContainer.find(dockerEvent.id, {fetch: false})
-        Portland.dockerContainers.remove(c)
+        #trigger a 'destroy' event
+        c.stopListening()
+        c.trigger('destroy', c, c.collection)
 
   _processQueueThrottled: =>
     #process updates
