@@ -15,6 +15,7 @@ class Portland.Views.ContainersMain extends Portland.Views.BaseLayout
     'click .tab-attach:not(.active):not(.disabled) a': '_showAttach'
 
   onShow: () ->
+    @listenTo(@model, 'destroy', -> Portland.app.vent.trigger('router:navigate', '/containers'))
     @actionsRegion.show(new Portland.Views.ContainersActions({@model}))
     @terminalRegion.show(new Portland.Views.Terminal({@model, type: 'logs'}))
 
