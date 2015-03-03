@@ -1,13 +1,17 @@
 <div class="pointer">
-  <span class="directory">
-    <span class="closed glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-    <span class="expanded glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
-    <span class="closed glyphicon glyphicon-folder-close" aria-hidden="true"></span>
-    <span class="expanded glyphicon glyphicon-folder-open" aria-hidden="true"></span>
+  <span data-bb="displayed:model.type=='directory'">
+    <span data-bb="displayed:!model.expanded">
+      <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+      <span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>
+    </span>
+    <span data-bb="displayed:model.expanded">
+      <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+      <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
+    </span>
   </span>
-  <span class="file glyphicon glyphicon-file" aria-hidden="true"></span>
-  <span name="name" style="padding: 8px 12px 8px 8px;"></span>
-  <span class="directory refresh expanded glyphicon glyphicon-refresh" aria-hidden="true"></span>
+  <span class="glyphicon glyphicon-file" aria-hidden="true" data-bb="displayed:model.type=='file'"></span>
+  <span data-bb="text:model.name,class:getSelectedClass" style="padding: 8px 12px 8px 8px;"></span>
+  <span class="refresh glyphicon glyphicon-refresh" aria-hidden="true" data-bb="displayed:displayRefresh"></span>
 
-  <div class="directory children-region" style="margin-left: 12px;"></div>
+  <div class="children-region" data-bb="displayed:model.type=='directory'" style="margin-left: 12px;"></div>
 </div>

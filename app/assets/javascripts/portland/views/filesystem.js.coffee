@@ -5,22 +5,18 @@ class FilesystemItem extends Portland.Views.BaseLayout
   regions:
     childrenRegion: '.children-region'
 
-  bindings:
-    type: [
-      {selector: '.directory', attr: 'displayed', toView: (v) -> v is 'directory'}
-      {selector: '.file', attr: 'displayed', toView: (v) -> v is 'file'}
-    ]
-    expanded: [
-      {selector: '.expanded', attr: 'displayed'}
-      {selector: '.closed', attr: 'hidden'}
-    ]
-
   events:
     'click': '_toggleExpanded'
     'click .refresh': '_refreshDirectory'
 
+  initialize: (options) ->
+    @chooseModel = options.chooseModel
+
   onShow: () ->
-    @childrenRegion.show(new Portland.Views.Filesystem({collection: @model.get('children')}))
+    @childrenRegion.show(new Portland.Views.Filesystem({@chooseModel, collection: @model.get('children')}))
+
+  getSelectedClass: ->
+    if @model.get('selected') then 'label label-primary' else ''
 
   _toggleExpanded: () ->
     if @model.get('type') is 'directory'
@@ -29,7 +25,15 @@ class FilesystemItem extends Portland.Views.BaseLayout
         @model.fetch()
       else
         @model.get('children').reset()
+    else
+      #mark our model as being selected
+      @chooseModel.set('selected_model', @model)
+      @model.set('selected', true)
+
     return false
+
+  displayRefresh: ->
+    return @model.get('expanded') and @model.get('type') is 'directory'
 
   _refreshDirectory: () ->
     @model.fetch()
@@ -39,3 +43,9 @@ class Portland.Views.Filesystem extends Portland.Views.BaseCollection
   childView: FilesystemItem
   tagName: 'ul'
   className: 'list-unstyled'
+
+  initialize: (options) ->
+    @chooseModel = options.chooseModel
+
+  childViewOptions: (model, index) ->
+    return {@chooseModel}
