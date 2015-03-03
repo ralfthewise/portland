@@ -1,5 +1,12 @@
-bindingRegex = /^([\w-]+):(!?[\w.-]+)(?:\|([\w-]+))?$/
+# some examples of the bindings:
+#   text:model.name
+#   class-active:!model.selected
+#   visible:model.type=='image'
+#
+# remember, the '(?:...)' syntax creates a non-captured match
+bindingRegex = /^([\w-]+):(!?[\w.-]+)(?:\|([\w-]+)|(==|!=|>|>=|<|<=)([^,]+))?$/
 classBindingRegex = /^class-([\w-]+)$/
+compareToRegex = /^'([^']+)'|"([^"]+)"|(true|false)|([0-9.]+)$/
 
 #constructs a closure to propogate Backbone changes to the view
 constructCallbackToPropagateBbChangesToView = (view, $el, elAttribute, bindingProperties, filters) ->
@@ -25,7 +32,7 @@ constructCallbackToPropagateBbChangesToView = (view, $el, elAttribute, bindingPr
           return true
     )
 
-    _.each(filters, (filter) -> result = Backbone.Bb.Filters[filter].call(view, result))
+    _.each(filters, (filter) -> result = Backbone.Bb.Filters[filter.name].call(view, result, filter.compareTo))
 
     #now actually update the view with the value
     updateView($el, elAttribute, result, previousResult)
@@ -93,6 +100,27 @@ constructCallbackToAttachBindingsToView = (view, toView, attachedBindings, bindi
 
   return attachBindings
 
+parseCompareTo = (compareTo) ->
+  throw new Error('Must provide a value to compare to') unless compareTo?
+  compareToArray = compareTo.match(compareToRegex)
+  return compareToArray[3] == 'true' if compareToArray[3]? #boolean
+  return Number(compareToArray[4]) if compareToArray[4]? #number
+
+  #string
+  return compareToArray[1] if compareToArray[1]?
+  return compareToArray[2] if compareToArray[2]?
+  return compareTo #last ditch effort, just return whatever they wrote
+
+mapComparatorFilter = (comparator, compareTo) ->
+  return switch comparator
+    when '==' then {name: 'equals', compareTo}
+    when '!=' then {name: 'notEquals', compareTo}
+    when '>' then {name: 'gt', compareTo}
+    when '>=' then {name: 'gte', compareTo}
+    when '<' then {name: 'lt', compareTo}
+    when '<=' then {name: 'lte', compareTo}
+    else throw new Error("Unable to parse comparator: #{comparator}")
+
 updateView = ($el, elAttribute, value, previousValue) ->
   switch elAttribute
     #text:model.someProperty
@@ -147,9 +175,10 @@ initBindings = (view) ->
       bindingSource = bindingArray[2]
       if bindingSource[0] is '!'
         bindingSource = bindingSource.slice(1)
-        filters.push('not')
+        filters.push({name: 'not'})
       bindingSourceProps = bindingSource.split('.')
-      filters.push(bindingArray[3]) if bindingArray[3]?
+      filters.push({name: bindingArray[3]}) if bindingArray[3]?
+      filters.push(mapComparatorFilter(bindingArray[4], parseCompareTo(bindingArray[5]))) if bindingArray[4]?
 
       toView = constructCallbackToPropagateBbChangesToView(view, $el, elAttribute, bindingSourceProps, filters)
 
