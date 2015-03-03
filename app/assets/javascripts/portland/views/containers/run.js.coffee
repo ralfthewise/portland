@@ -4,6 +4,10 @@ class Portland.Views.ContainersRun extends Portland.Views.BaseLayout
   ui:
     imageSelect: '.image-selection'
 
+  events:
+    'click .btn-browse': '_browseDockerfile'
+    'focus .txt-browse': '_browseDockerfile'
+
   onShow: ->
     @ui.imageSelect.selectize(
       valueField: 'id'
@@ -15,6 +19,12 @@ class Portland.Views.ContainersRun extends Portland.Views.BaseLayout
       load: @_searchImages
       score: @_scoreItem
     )
+
+  initialize: () ->
+    @model = new Portland.Models.Base({container_source: 'image'})
+
+  _browseDockerfile: ->
+    Portland.app.vent.trigger('modal:show', new Portland.Views.ChooseFileModal())
 
   _searchImages: (query, cb) =>
     if @loaded

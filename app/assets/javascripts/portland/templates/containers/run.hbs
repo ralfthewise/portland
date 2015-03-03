@@ -3,8 +3,25 @@
   <div class="panel-body">
     <div class="panel panel-default">
       <div class="panel-body">
-        <h4>Pick Image</h4>
+        <h4>Container Source</h4>
+        <div class="row">
+          <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
+            <label class="btn btn-primary btn-block">
+              <input type="radio" name="container_source" value="image" /> Existing Image
+            </label>
+          </div>
+          <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
+            <label class="btn btn-primary btn-block">
+              <input type="radio" name="container_source" value="dockerfile" /> Dockerfile
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
 
+    <div class="panel panel-default" data-bb="displayed:model.container_source=='image'">
+      <div class="panel-body">
+        <h4>Pick Image</h4>
         <div class="form-horizontal">
           <div class="form-group">
             <label class="col-xs-3 control-label" for="inputImage">Image</label>
@@ -17,6 +34,25 @@
             <label class="col-xs-3 control-label" for="inputImage2">Image</label>
             <div class="col-xs-3">
               <input id="inputImage2" type="text" class="form-control" placeholder="Testing Here" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-default" data-bb="displayed:model.container_source=='dockerfile'">
+      <div class="panel-body">
+        <h4>Build Options</h4>
+        <div class="form-horizontal">
+          <div class="form-group">
+            <label class="col-xs-3 control-label pointer" for="inputDockerfile">Dockerfile</label>
+            <div class="col-xs-3">
+              <div class="input-group">
+                <input id="inputDockerfile" type="text" class="form-control txt-browse" placeholder="Pick file...">
+                <span class="input-group-btn">
+                  <button class="btn btn-default btn-browse" type="button"><span class="glyphicon glyphicon-folder-open"></span></button>
+                </span>
+              </div>
             </div>
           </div>
         </div>
