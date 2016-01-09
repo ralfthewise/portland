@@ -4,6 +4,7 @@ cleanup() {
   printf "\nShutting down..."
   bundle exec eye quit -s
   pkill -P $$
+  wait
 }
 trap 'cleanup' SIGTERM SIGINT
 
